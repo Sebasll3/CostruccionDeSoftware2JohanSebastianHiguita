@@ -1,0 +1,12 @@
+package domain.models;
+
+public enum  SystemRol {
+    INTERNAL_BANK_ANALYST, 
+    COMMERCIAL_EMPLOYEE, 
+    INDIVIDUAL_CUSTOMER, 
+    COMPANY_EMPLOYEE, 
+    CORPORATE_CLIENT, 
+    COMPANY_SUPERVISOR, 
+    COUNTER_CLERK, 
+    
+}
