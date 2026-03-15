@@ -20,5 +20,5 @@ public class BankAccount extends BankingProduct {
     private BigDecimal currentBalance;
     private Currency currency;
     private AccountStatus accountStatus;
-    private LocalDate openingDate;
+    private LocalDate openingDate; 
 }
