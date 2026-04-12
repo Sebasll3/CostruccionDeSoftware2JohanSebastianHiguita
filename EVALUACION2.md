@@ -1,59 +1,59 @@
 # EVALUACION 2 - CostruccionDeSoftware2JohanSebastianHiguita
 
 ## Informacion general
-- Estudiante(s): Integrantes no informados en README.md
+- Estudiante(s): Johan Sebastian Higuita (usuario GitHub: Sebasll3)
 - Rama evaluada: main
-- Commit evaluado: ceef827dbb8d77644489f67a026acea618807ce4
+- Commit evaluado: d6cdac745b3e042ef6d0573c958899236764c386
 - Fecha: 2026-04-11
 
 ## Tabla de calificacion
 
 | Criterio | Peso | Puntaje (1-5) | Aporte |
 |---|---|---|---|
-| 1. Modelado de dominio | 20% | 3 | 0.60 |
-| 2. Modelado de puertos | 20% | 1 | 0.20 |
-| 3. Modelado de servicios de dominio | 20% | 1 | 0.20 |
-| 4. Enums y estados | 10% | 3 | 0.30 |
-| 5. Reglas de negocio criticas | 10% | 2 | 0.20 |
-| 6. Bitacora y trazabilidad | 5% | 3 | 0.15 |
-| 7. Estructura interna de dominio | 10% | 2 | 0.20 |
-| 8. Calidad tecnica base en domain | 5% | 2 | 0.10 |
-| **SUBTOTAL** | | | **1.95** |
+| 1. Modelado de dominio | 20% | 4 | 0.80 |
+| 2. Modelado de puertos | 20% | 3 | 0.60 |
+| 3. Modelado de servicios de dominio | 20% | 3 | 0.60 |
+| 4. Enums y estados | 10% | 4 | 0.40 |
+| 5. Reglas de negocio criticas | 10% | 4 | 0.40 |
+| 6. Bitacora y trazabilidad | 5% | 5 | 0.25 |
+| 7. Estructura interna de dominio | 10% | 4 | 0.40 |
+| 8. Calidad tecnica base en domain | 5% | 3 | 0.15 |
+| **SUBTOTAL** | | | **3.60** |
 
 ## Penalizaciones
-- **Nomenclatura mixta con patron espanol (-10%):** Campos como `idIdentification`, `statusUser`, `rolSystem`, enum `SystemRol` con patron de nombre espanol.
-- **Estado en String donde debe ser enum (-10%):** `Transfer.transferStatus` es `String` en lugar de enum.
+- **Nomenclatura deficiente (-5%):** Typos en campos de dominio: `adress` (debe ser `address`) en `User`, `bussName` (debe ser `businessName`) en `BusinessClient`. Inconsistencia menor de calidad.
 
-Calculo: 1.95 x 0.90 x 0.90 = **1.58**
+Calculo: 3.60 x 0.95 = **3.42**
 
 ## Bonus
-- Ninguno.
+- +0.2: 9 puertos bien estructurados separando entrada (service interfaces) de salida (repository ports).
+- +0.1: Excelente trazabilidad con `AuditRecord`, `AuditPort` y `AuditServiceImpl` con metodos semanticos.
+
+Total bonus: +0.3
 
 ## Nota final
-**1.6 / 5.0**
+**3.7 / 5.0**
 
 ---
 
 ## Hallazgos
 
 ### Positivos
-- Uso de `BigDecimal` para montos monetarios (correcto).
-- Uso de `Lombok` (`@Getter`, `@Setter`, `@NoArgsConstructor`, `@AllArgsConstructor`).
-- `AuditRecord` con `operationType`, `affectedProductId`, `detailData`.
-- `LoanStatus` bien definido: UNDER_STUDY, APPROVED, REJECTED, DISBURSED, IN_ARREARS, CANCELLED (6 estados).
-- `AccountStatus` correcto: ACTIVE, BLOCKED, CANCELLED.
+- **Arquitectura hexagonal bien implementada** con separacion clara de puertos de entrada y salida.
+- **8 entidades:** `User`, `BankAccount`, `Transfer`, `Loan`, `BusinessClient`, `AuditRecord`, `BankingProduct`, `BankProductCatalog`.
+- **9 puertos:** 4 service interfaces (`BankAccountService`, `LoanService`, `TransferService`, `UserService`) + 5 repository ports (`BankAccountPort`, `LoanPort`, `TransferPort`, `UserPort`, `AuditPort`).
+- **5 implementaciones de servicio:** `BankAccountServiceImpl`, `LoanServiceImpl`, `TransferServiceImpl`, `UserServiceImpl`, `AuditServiceImpl` con sub-servicios especializados.
+- **BigDecimal** para todos los montos (correcto para precision financiera).
+- **7 enums** bien definidos: `AccountType`, `AccountStatus`, `Currency`, `LoanStatus` (6 estados: UNDER_STUDY, APPROVED, REJECTED, DISBURSED, IN_ARREARS, CANCELLED), `SystemRol`, `BankingCategory`, `OperationType`.
+- `AuditRecord` con `AuditPort` y `AuditServiceImpl.logDeposit()`, `logWithdraw()`, `logTransfer()`, `logLoanRequest()`, `logUserOperation()`.
+- Lombok y `@Service` no se penalizan en esta evaluacion.
 
 ### Negativos
-- **`Transfer.transferStatus` es `String` en lugar de enum `TransferStatus`.** Penaliza -10%.
-- **Nomenclatura con patron espanol:** `SystemRol` (nombre espanol), `idIdentification`, `statusUser`, `rolSystem`, `adress` (typo). Penaliza -10%.
-- `AuditRecord.OperationType` usa `String` en lugar de enum.
-- **Sin puertos:** no hay interfaces de salida.
-- **Sin servicios de dominio:** no hay implementacion de casos de uso.
-- README no informa integrantes del proyecto.
+- Typos en campos: `adress` en User, `bussName` en BusinessClient. Penaliza -5% nomenclatura.
+- Manejo de excepciones con `throws Exception` generico en firmas de puertos (debe ser excepciones de dominio especificas).
+- Puertos y servicios estan en `app/` no en `domain/`, lo cual es aceptable pero no es dominio puro.
 
 ## Recomendaciones
-1. Cambiar `Transfer.transferStatus: String` a `Transfer.status: TransferStatus` (enum).
-2. Renombrar campos al patron ingles: `SystemRole` en lugar de `SystemRol`, `fullName` en lugar de `nombreCompleto` (si existia), etc.
-3. Crear puertos por agregado.
-4. Implementar servicios de dominio por caso de uso.
-5. Identificar integrantes en el README.md.
+1. Corregir typos: `adress` -> `address`, `bussName` -> `businessName`.
+2. Definir `DomainException` o excepciones especificas en lugar de `throws Exception`.
+3. Excelente trabajo de arquitectura hexagonal con puertos y servicios completos.
